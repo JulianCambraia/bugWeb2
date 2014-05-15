@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+	<ui:include src="/index.xhtml" />
+</h:head>
+<h:body styleClass="body">
+	<h1>Cadastro de Bugs do Projeto</h1>
+	<h:form acceptcharset="ISO-8859-1">
+		<h:inputHidden value="#{bugMB.bug.id}" />
+		<p:panelGrid columns="2">
+			<h:outputLabel value="Severidade:" />
+			<p:selectOneMenu value="#{bugMB.bug.severidade}" effect="fade">
+				<f:selectItem itemLabel="Alta" itemValue="Alta"/>
+				<f:selectItem itemLabel="Média" itemValue="Media"/>
+				<f:selectItem itemLabel="Baixa" itemValue="Baixa"/>
+			</p:selectOneMenu>
+			<h:outputLabel value="Descrição" />
+			<p:inputTextarea value="#{bugMB.bug.descricao}" rows="10" cols="50" />
+			
+			<h:outputLabel value="Projeto:" />
+			<p:selectOneMenu value="#{bugMB.projectId}" panelStyle="width:220px">
+				<f:selectItem itemLabel="Clique para selecionar" itemValue="" />
+				<f:selectItems 
+					value="#{projectMB.projects}"
+					var="project"
+					itemLabel="#{project.name}"
+					itemValue="#{project.id}"
+				/>
+			</p:selectOneMenu>
+			<h:commandButton value="Save" action="#{bugMB.save()}" update="tbBugs" />
+		</p:panelGrid>
+		<hr />
+		<h1>Lista de Bugs</h1>
+		<p:dataTable id="tbBugs" value="#{bugMB.bugs}" var="bug"  rendered="#{not empty bugMB.bugs}" border="1">
+			<p:column>
+				<f:facet name="header">Id</f:facet>
+				#{bug.id}
+			</p:column>
+			<p:column>
+				<f:facet name="header">Descrição</f:facet>
+				#{bug.descricao}
+			</p:column>
+			<p:column>
+				<f:facet name="header">Severidade</f:facet>
+				#{bug.severidade}
+			</p:column>
+			<p:column>
+				<f:facet name="header">Projeto</f:facet>
+				#{projectMB.projectRepository.findById(bug.project.id).descricao}
+			</p:column>
+			
+			<p:column style="width:2%">
+				<f:facet name="header">Alterar</f:facet>
+				<p:commandButton action="#{bugMB.preparedEdit(bug.id)}" icon="ui-icon-pencil" title="Alterar Bug" update="@all"/>
+			</p:column>
+			<p:column style="width:2%">
+				<f:facet name="header">Excluir</f:facet>
+				<p:commandButton action="#{bugMB.delete(bug.id)}" icon="ui-icon-trash" title="Excluir Bug" update="@all"/>
+			</p:column>
+			<ui:remove>
+			<p:column style="width:4%">
+				<f:facet name="header">Excluir</f:facet>
+				<h:commandLink action="#{bugMB.delete(bug.id)}">delete</h:commandLink>
+			</p:column>
+			</ui:remove>
+		</p:dataTable>
+	</h:form>
+</h:body>
+</html>

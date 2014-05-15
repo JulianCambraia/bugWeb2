@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+	<ui:include src="/index.xhtml" />
+</h:head>
+<h:body styleClass="body">
+	<h1>Cadastro de Projetos</h1>
+	<h:form id="frmProject" acceptcharset="ISO-8859-1">
+		<h:inputHidden value="#{projectMB.project.id}" />
+		<p:panelGrid columns="2">
+			<h:outputLabel value="Nome" />
+			<p:inputText value="#{projectMB.project.name}" />
+			
+			<h:outputLabel value="Descrição" />
+			<p:inputTextarea value="#{projectMB.project.descricao}" rows="10" cols="50"/>
+			
+			<p:commandButton ajax="false" value="Save" action="#{projectMB.save()}" update="tbProjetos"/>
+		</p:panelGrid>
+	<hr />
+	<h1>Lista de Projetos</h1>
+	
+	<p:dataTable id="tbProjetos" value="#{projectMB.projects}" var="project" rendered="#{not empty projectMB.projects}" border="1" resizableColumns="true" liveResize="true">
+		
+		<p:column style="width:2%">
+			<f:facet name="header">Id</f:facet>
+			#{project.id}
+		</p:column>
+		<p:column style="width:6%">
+			<f:facet name="header">Nome</f:facet>
+			#{project.name}
+		</p:column>
+		
+		<p:column headerText="Descrição" style="text-align: left; width:25%;" >
+			<h:outputText value="#{project.descricao}"  />
+		</p:column>
+		
+		<p:column style="width:0.7%">
+			<f:facet name="header">Editar</f:facet>
+			<p:commandButton action="#{projectMB.preparedEdit(project.id)}" icon="ui-icon-pencil" title="Alterar projeto" update="@all"/>
+		</p:column>
+		<p:column style="width:0.7%">
+			<f:facet name="header">Excluir</f:facet>
+			<p:commandButton action="#{projectMB.delete(project.id)}" icon="ui-icon-trash" title="Excluir projeto" update="@all"/>
+		</p:column>
+		<ui:remove>
+		<p:column style="width:2%">
+			<f:facet name="header">Excluir</f:facet>
+			<h:commandLink action="#{projectMB.delete(project.id)}">delete</h:commandLink>
+		</p:column>
+		</ui:remove>
+	</p:dataTable>
+	</h:form>
+</h:body>
+</html>
